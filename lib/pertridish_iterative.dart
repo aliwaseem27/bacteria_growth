@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:bacteria_growth/bacteria.dart';
 import 'package:bacteria_growth/bacteria_collection.dart';
@@ -17,9 +18,14 @@ class _PetriDishIterativeState extends State<PetriDishIterative> {
   static const double deathProbability = 0.001;
   static const double maxBacteriaAmount = 1024;
 
-  List<Bacteria> bacteriaList = <Bacteria>[Bacteria(30, 40), Bacteria(300, 400),Bacteria(100, 200),];
+  List<Bacteria> bacteriaList = <Bacteria>[
+    Bacteria(30, 40),
+    Bacteria(300, 400),
+    Bacteria(100, 200),
+  ];
 
   Timer? timer;
+  Size size = Size.zero;
 
   @override
   void initState() {
@@ -35,43 +41,57 @@ class _PetriDishIterativeState extends State<PetriDishIterative> {
     super.dispose();
   }
 
-  void _tick(){
-    if (bacteriaList.isEmpty){
+  void _tick() {
+    if (bacteriaList.isEmpty) {
       _createInitialBacteria();
       return;
     }
     _iterateAllBacteria();
   }
 
-  void _createInitialBacteria(){
-    // TODO: Implement
+  void _createInitialBacteria() {
+    final List<Bacteria> newList = <Bacteria>[];
+    newList.add(Bacteria.createRandomFromBounds(size.width, size.height));
+    _updateBacteriaList(newList);
   }
 
-  void _iterateAllBacteria(){
+  void _iterateAllBacteria() {
     final List<Bacteria> newList = <Bacteria>[];
-    for (final Bacteria bacteria in bacteriaList){
+    for (final Bacteria bacteria in bacteriaList) {
       _createNewBacteria(bacteria, newList);
     }
     _updateBacteriaList(newList);
   }
 
-  void _createNewBacteria(Bacteria bacteria,List<Bacteria> newList){
-    // TODO: Implement
+  void _createNewBacteria(Bacteria bacteria, List<Bacteria> newList) {
+    final Bacteria movedBacteria =
+        Bacteria.createRandomFromExistingBacteria(size, bacteria);
+    newList.add(movedBacteria);
+
+    final bool shouldCreateNew =
+        Random().nextDouble() > 1 - recreationProbability;
+
+    if (shouldCreateNew && bacteriaList.length < maxBacteriaAmount) {
+      newList.add(Bacteria.createRandomFromExistingBacteria(size, bacteria));
+    }
   }
 
-  void _updateBacteriaList(List<Bacteria> newList){
+  void _updateBacteriaList(List<Bacteria> newList) {
     setState(() {
       bacteriaList = newList;
     });
   }
 
-
-
-
-
-
   @override
   Widget build(BuildContext context) {
-    return BacteriaCollection(bacteriaList: bacteriaList);
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      size = constraints.biggest;
+      return SizedBox(
+        width: size.width,
+        height: size.height,
+        child: BacteriaCollection(bacteriaList: bacteriaList),
+      );
+    });
   }
 }
