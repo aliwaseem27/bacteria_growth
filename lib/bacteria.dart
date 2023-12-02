@@ -5,17 +5,18 @@ import 'package:flutter/material.dart';
 class Bacteria {
   double x;
   double y;
-  // double rotation;
+  double rotation;
   final double height = 24;
   final double width = 12;
 
-  Bacteria(this.x, this.y);
+  Bacteria(this.x, this.y, this.rotation);
 
   factory Bacteria.createRandomFromBounds(double width, double height){
     final double x = Random().nextDouble() * width;
     final double y = Random().nextDouble() * height;
+    final double rotation = Random().nextDouble() * pi;
 
-    return Bacteria(x, y);
+    return Bacteria(x, y, rotation);
   }
 
   factory Bacteria.createRandomFromExistingBacteria(Size environmentSize, Bacteria existingBacteria){
@@ -36,8 +37,9 @@ class Bacteria {
 
     final double x = newX;
     final double y = newY;
+    final double rotation = existingBacteria.rotation + (Random().nextDouble() * 2 - 1) * pi / 40;
 
-    return Bacteria(x, y);
+    return Bacteria(x, y, rotation);
   }
 
   double _getMovementAddition(){

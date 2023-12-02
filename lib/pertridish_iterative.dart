@@ -18,11 +18,7 @@ class _PetriDishIterativeState extends State<PetriDishIterative> {
   static const double deathProbability = 0.001;
   static const double maxBacteriaAmount = 1024;
 
-  List<Bacteria> bacteriaList = <Bacteria>[
-    Bacteria(30, 40),
-    Bacteria(300, 400),
-    Bacteria(100, 200),
-  ];
+  List<Bacteria> bacteriaList = <Bacteria>[];
 
   Timer? timer;
   Size size = Size.zero;
@@ -57,17 +53,20 @@ class _PetriDishIterativeState extends State<PetriDishIterative> {
 
   void _iterateAllBacteria() {
     final List<Bacteria> newList = <Bacteria>[];
+
     for (final Bacteria bacteria in bacteriaList) {
+      final bool shouldKill = Random().nextDouble() > 1 - deathProbability;
+
+      if (!shouldKill){
+        final Bacteria movedBacteria = Bacteria.createRandomFromExistingBacteria(size, bacteria);
+        newList.add(movedBacteria);
+      }
       _createNewBacteria(bacteria, newList);
     }
     _updateBacteriaList(newList);
   }
 
   void _createNewBacteria(Bacteria bacteria, List<Bacteria> newList) {
-    final Bacteria movedBacteria =
-        Bacteria.createRandomFromExistingBacteria(size, bacteria);
-    newList.add(movedBacteria);
-
     final bool shouldCreateNew =
         Random().nextDouble() > 1 - recreationProbability;
 

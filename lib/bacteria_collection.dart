@@ -21,9 +21,12 @@ class BacteriaCollection extends StatelessWidget {
       left: bacteria.x,
       top: bacteria.y,
       child: Container(
-        width: 10,
-        height: 10,
-        color: Colors.black,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: Colors.black38,
+        ),
+        width: bacteria.width,
+        height: bacteria.height,
       ),
     );
   }
