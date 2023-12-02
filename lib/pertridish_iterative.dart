@@ -57,8 +57,9 @@ class _PetriDishIterativeState extends State<PetriDishIterative> {
     for (final Bacteria bacteria in bacteriaList) {
       final bool shouldKill = Random().nextDouble() > 1 - deathProbability;
 
-      if (!shouldKill){
-        final Bacteria movedBacteria = Bacteria.createRandomFromExistingBacteria(size, bacteria);
+      if (!shouldKill) {
+        final Bacteria movedBacteria =
+            Bacteria.createRandomFromExistingBacteria(size, bacteria);
         newList.add(movedBacteria);
       }
       _createNewBacteria(bacteria, newList);
